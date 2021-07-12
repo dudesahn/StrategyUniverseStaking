@@ -274,12 +274,8 @@ contract StrategyUniverseStaking is BaseStrategy {
             uint256 withdrawnBal = _balanceOfWant();
             _liquidatedAmount = Math.min(_amountNeeded, withdrawnBal);
 
-            // if _amountNeeded > withdrawnBal, then we have an error
-            if (_amountNeeded > withdrawnBal) {
-                uint256 assets = estimatedTotalAssets();
-                uint256 debt = vault.strategies(address(this)).totalDebt;
-                if (debt > assets) _loss = debt.sub(assets);
-            }
+            _loss = _amountNeeded.sub(_liquidatedAmount);
+
         } else {
             // we have enough balance to cover the liquidation available
             return (_amountNeeded, 0);
